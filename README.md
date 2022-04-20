@@ -8,6 +8,11 @@
 
 GigaChad Password Generator
 
+### Prerequisites 
+- pbcopy (MacOS)
+- xclip (Linux) (working on it)
+- curl
+
 ### Usage: 
 You can run it using `curl`:  
 `bash -c "$(curl -fsSL https://raw.githubusercontent.com/0xPacman/PasswordGEN/main/PasswordGEN.sh)"`
