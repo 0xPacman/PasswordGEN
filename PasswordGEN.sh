@@ -46,3 +46,4 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	echo $pass | pbcopy
 else
 	echo $pass | xclip -sel clip
+fi
