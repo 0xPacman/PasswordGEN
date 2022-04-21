@@ -10,7 +10,7 @@ GigaChad Password Generator
 
 ### Prerequisites 
 - pbcopy (MacOS)
-- xclip (Linux) (working on it)
+- xclip (Linux/BSD)
 - curl
 
 ### Usage: 
