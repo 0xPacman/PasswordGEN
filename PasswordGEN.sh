@@ -42,5 +42,7 @@ do
 done
 
 echo "Your password is: $pass"
-
-echo $pass | pbcopy
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	echo $pass | pbcopy
+else
+	echo $pass | xclip -sel clip
