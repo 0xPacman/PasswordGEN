@@ -11,7 +11,7 @@ pass=""
 
 if ! [[ $length =~ ^[0-9]+$ ]] || [[ $length -lt 8 ]]
 then
-    echo "Error: Enter a valid number"
+    echo "Error: Enter a valid digit"
     exit 1
 fi
 
@@ -47,3 +47,4 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
 	echo $pass | xclip -sel clip
 fi
+
