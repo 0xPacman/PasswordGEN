@@ -42,9 +42,14 @@ do
 done
 
 echo "Your password is: $pass"
-if [[ "$OSTYPE" == "darwin"* ]]; then
-	echo $pass | pbcopy
+if grep -qEi "(Microsoft|WSL)" /proc/version; then
+    echo "$pass" | clip.exe
 else
-	echo $pass | xclip -sel clip
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "$pass" | pbcopy
+    else
+        echo "$pass" | xclip -sel clip
+    fi
 fi
+
 
