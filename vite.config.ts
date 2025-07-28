@@ -19,10 +19,16 @@ export default defineConfig({
   // PWA-like optimization
   server: {
     host: true,
-    port: 5173
+    port: 5173,
+    headers: {
+      'Content-Type': 'application/javascript'
+    }
   },
   preview: {
     host: true,
-    port: 4173
+    port: 4173,
+    headers: {
+      'Content-Type': 'application/javascript'
+    }
   }
 })
