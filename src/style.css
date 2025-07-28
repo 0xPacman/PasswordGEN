@@ -12,9 +12,34 @@
   }
 }
 
+@keyframes rgb-glow {
+  0% {
+    box-shadow: 0 0 20px rgba(255, 0, 150, 0.3), 0 0 40px rgba(255, 0, 150, 0.1);
+  }
+  33% {
+    box-shadow: 0 0 20px rgba(0, 255, 150, 0.3), 0 0 40px rgba(0, 255, 150, 0.1);
+  }
+  66% {
+    box-shadow: 0 0 20px rgba(150, 0, 255, 0.3), 0 0 40px rgba(150, 0, 255, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 0, 150, 0.3), 0 0 40px rgba(255, 0, 150, 0.1);
+  }
+}
+
+@keyframes yellow-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(234, 179, 8, 0.4), 0 0 10px rgba(234, 179, 8, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.6), 0 0 20px rgba(234, 179, 8, 0.3);
+  }
+}
+
 @layer components {
   .card {
-    @apply bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl backdrop-blur-sm;
+    @apply bg-dark-900 border border-dark-700 rounded-2xl backdrop-blur-sm relative;
+    animation: rgb-glow 4s ease-in-out infinite;
   }
   
   .btn-primary {
@@ -39,5 +64,10 @@
   
   .checkbox-custom {
     @apply w-5 h-5 text-primary-500 bg-dark-800 border-dark-600 rounded focus:ring-primary-500 focus:ring-2;
+  }
+  
+  .strength-bar-glow {
+    animation: yellow-glow 2s ease-in-out infinite;
+    border-radius: 9999px;
   }
 }
