@@ -150,7 +150,7 @@
         </div>
         <div class="w-full bg-dark-700 rounded-full h-2">
           <div
-            :class="[strengthColor.replace('text-', 'bg-'), 'strength-bar-glow']"
+            :class="[strengthColor.replace('text-', 'bg-'), 'strength-bar-shadow']"
             class="h-2 rounded-full transition-all duration-500"
             :style="{ width: strengthPercentage + '%' }"
           ></div>
