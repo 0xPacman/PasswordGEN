@@ -159,8 +159,19 @@
     </div>
 
     <!-- Footer -->
-    <div class="text-center mt-8 text-gray-500 text-sm">
+    <div class="text-center mt-8 text-gray-500 text-sm space-y-2">
       <p>🔒 All passwords are generated locally in your browser for maximum security</p>
+      <p>
+        Made with ❤️ by 
+        <a 
+          href="https://0xpacman.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-primary-500 hover:text-primary-400 transition-colors duration-200 font-medium"
+        >
+          0xPacman
+        </a>
+      </p>
     </div>
   </div>
 </template>
