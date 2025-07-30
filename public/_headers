@@ -5,14 +5,11 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-*.js
+/*.js
   Content-Type: application/javascript
 
-*.mjs
+/*.mjs
   Content-Type: application/javascript
 
-*.ts
-  Content-Type: application/javascript
-
-*.css
+/*.css
   Content-Type: text/css
