@@ -1,8 +1,46 @@
-# MIME type fixes
+# Force MIME types for JavaScript modules
+<Files "*.js">
+    ForceType application/javascript
+</Files>
+
+<Files "*.mjs">
+    ForceType application/javascript
+</Files>
+
+<Files "*.css">
+    ForceType text/css
+</Files>
+
+# Additional MIME type fixes
 AddType application/javascript .js
 AddType application/javascript .mjs
 AddType text/css .css
 AddType text/html .html
+
+# Security headers to fix console warnings
+<IfModule mod_headers.c>
+    # Content-Type header charset
+    Header always set Content-Type "text/html; charset=utf-8" "expr=%{CONTENT_TYPE} =~ m#text/html#i"
+    
+    # Cache-Control header
+    Header always set Cache-Control "public, max-age=31536000" "expr=%{REQUEST_URI} =~ m#\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$#i"
+    Header always set Cache-Control "no-cache, no-store, must-revalidate" "expr=%{REQUEST_URI} =~ m#\.(html)$#i"
+    
+    # X-Content-Type-Options header
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # X-Frame-Options header
+    Header always set X-Frame-Options "DENY"
+    
+    # X-XSS-Protection header
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer-Policy header
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content-Security-Policy header
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
+</IfModule>
 
 # Gzip compression
 <IfModule mod_deflate.c>
@@ -17,7 +55,7 @@ AddType text/html .html
     AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
 
-# Cache control
+# Cache control with proper directives
 <IfModule mod_expires.c>
     ExpiresActive on
     ExpiresByType text/css "access plus 1 year"
@@ -25,12 +63,17 @@ AddType text/html .html
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/jpg "access plus 1 year"
     ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
-# Security headers
-<IfModule mod_headers.c>
-    Header always set X-Frame-Options DENY
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
+# Prevent serving TypeScript files
+<Files "*.ts">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Ensure index.html is served for SPA routing
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
