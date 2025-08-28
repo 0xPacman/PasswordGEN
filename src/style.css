@@ -5,45 +5,59 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    --bg: #020617;
+    --bg-alt: #0f172a;
+    --card: #0f172a;
+    --card-border: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #eab308; /* locked accent */
+    --accent-rgb: 234 179 8;
+    --focus: var(--accent);
+    color-scheme: dark;
   }
   
   body {
     @apply bg-dark-950 text-gray-100 min-h-screen;
   }
+
+  body { background: radial-gradient(circle at 30% 30%, rgba(var(--accent-rgb)/0.10), transparent 55%), var(--bg); }
 }
 
-@keyframes rgb-glow {
-  0% {
-    box-shadow: 0 0 20px rgba(255, 0, 150, 0.3), 0 0 40px rgba(255, 0, 150, 0.1);
-  }
-  33% {
-    box-shadow: 0 0 20px rgba(0, 255, 150, 0.3), 0 0 40px rgba(0, 255, 150, 0.1);
-  }
-  66% {
-    box-shadow: 0 0 20px rgba(150, 0, 255, 0.3), 0 0 40px rgba(150, 0, 255, 0.1);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(255, 0, 150, 0.3), 0 0 40px rgba(255, 0, 150, 0.1);
-  }
-}
+/* Removed heavy glow animation for performance */
 
 @layer components {
   .card {
-    @apply bg-dark-900 border border-dark-700 rounded-2xl backdrop-blur-sm relative;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    @apply border rounded-2xl relative;
+    background: linear-gradient(150deg, var(--card) 0%, rgba(var(--accent-rgb)/0.04) 100%);
+    border-color: var(--card-border);
+    box-shadow: 0 4px 14px -4px rgba(0,0,0,0.55), 0 2px 4px -2px rgba(0,0,0,0.4);
+    transition: box-shadow .25s ease, transform .25s ease;
   }
-  
-  .card:hover {
-    animation: rgb-glow 4s ease-in-out infinite;
-  }
+  .card:hover { box-shadow: 0 6px 18px -5px rgba(0,0,0,0.6); transform: translateY(-2px); }
   
   .btn-primary {
-    @apply bg-primary-500 hover:bg-primary-400 text-dark-900 font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-primary-500/25;
+    @apply font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg;
+    background: linear-gradient(90deg,var(--accent) 0%,color-mix(in srgb,var(--accent) 85%,white) 100%);
+    color: #0f172a;
+    box-shadow: 0 4px 16px -2px rgba(var(--accent-rgb)/0.45);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 6px 22px -2px rgba(var(--accent-rgb)/0.55);
   }
   
   .btn-secondary {
-    @apply bg-dark-800 hover:bg-dark-700 text-gray-100 border border-dark-600 hover:border-primary-500 font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    @apply font-medium py-2 px-4 rounded-lg transition-all duration-200 border;
+    background: var(--bg-alt);
+    border-color: var(--card-border);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
   
   .input-range {
@@ -59,11 +73,34 @@
   }
   
   .checkbox-custom {
-    @apply w-5 h-5 text-primary-500 bg-dark-800 border-dark-600 rounded focus:ring-primary-500 focus:ring-2;
+  @apply w-5 h-5 rounded border focus:ring-2;
+  background: var(--bg-alt);
+  border-color: var(--card-border);
+  accent-color: var(--accent);
   }
   
   .strength-bar-shadow {
     box-shadow: 0 2px 8px rgba(234, 179, 8, 0.2);
     border-radius: 9999px;
   }
+
+  .swatch {
+    @apply w-7 h-7 rounded-full cursor-pointer relative transition-transform duration-200;
+  }
+  .swatch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .swatch:hover { transform: scale(1.1); }
+  .swatch[data-active="true"]::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--accent);
+    border-radius: 9999px;
+  }
+
+  .fade-slide-enter-active, .fade-slide-leave-active { transition: all .35s cubic-bezier(.4,0,.2,1); }
+  .fade-slide-enter-from, .fade-slide-leave-to { opacity:0; transform: translateY(6px); }
+
+  .glass-panel { background: linear-gradient(160deg, rgba(var(--accent-rgb)/0.07), rgba(255 255 255 / 0.02)); border: 1px solid rgba(var(--accent-rgb)/0.18); /* removed heavy blur */ }
+
+  .focus-outline:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 }

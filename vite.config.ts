@@ -21,15 +21,11 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    headers: {
-      'Content-Type': 'application/javascript'
-    }
+  // Removed incorrect global Content-Type header; Vite sets proper per-resource MIME types
   },
   preview: {
     host: true,
     port: 4173,
-    headers: {
-      'Content-Type': 'application/javascript'
-    }
+  // Same as above; rely on default headers
   }
 })
