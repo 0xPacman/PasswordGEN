@@ -215,7 +215,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 // Reactive state
 const generatedPassword = ref('')
@@ -266,7 +266,6 @@ const pushHistory = (pwd:string) => {
   history.value.unshift({ id: Date.now()+Math.random(), value: pwd })
   if (history.value.length > maxHistory) history.value.pop()
 }
-const clearHistory = () => { history.value = [] }
 const mask = (pwd:string) => pwd.slice(0,4) + '••••' + pwd.slice(-2)
 const reveal = (item:{revealed?:boolean}) => { item.revealed = !item.revealed }
 const reUse = (pwd:string) => { generatedPassword.value = pwd }
