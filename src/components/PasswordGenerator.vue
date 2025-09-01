@@ -6,7 +6,7 @@
         Password<span class="text-primary-500">GEN</span>
       </h1>
       <p class="text-gray-400 max-w-2xl mx-auto text-lg">
-        Generate secure passwords with customizable options. Compact history & stable results unless you choose to regenerate.
+        Generate secure passwords with customizable options.
       </p>
       <div class="pointer-events-none absolute -inset-x-10 -bottom-6 h-20 bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.12),transparent_70%)] blur-xl"></div>
     </div>
