@@ -1,214 +1,119 @@
 <template>
-  <div class="max-w-4xl mx-auto">
-    <!-- Header (restored simpler title) -->
-    <div class="text-center mb-10 relative">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-        Password<span class="text-primary-500">GEN</span>
-      </h1>
-      <p class="text-gray-400 max-w-2xl mx-auto text-lg">
-        Generate secure passwords with customizable options.
-      </p>
-      <div class="pointer-events-none absolute -inset-x-10 -bottom-6 h-20 bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.12),transparent_70%)] blur-xl"></div>
+  <div class="max-w-xl mx-auto">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">Password<span class="text-primary-500">GEN</span></h1>
+      <p class="text-gray-400 text-sm">A sleek command palette to craft strong passwords.</p>
     </div>
 
-    <!-- Main Card -->
-  <div class="card p-8 md:p-10 space-y-12 overflow-hidden relative">
-      <!-- Generated Password Display -->
-      <div class="space-y-5 relative">
-        <label class="block text-sm font-medium text-gray-300">
-          Generated Password
-        </label>
-        <div class="relative group">
-          <input
-            :value="generatedPassword"
-            readonly
-            class="w-full bg-gradient-to-br from-dark-800 to-dark-900/90 border border-dark-600 rounded-2xl px-6 py-6 text-2xl md:text-3xl font-mono tracking-wide text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent pr-28 shadow-inner"
-            :placeholder="generatedPassword || 'Click generate to create a password'"
-          />
-          <button
-            @click="copyToClipboard"
-            :disabled="!generatedPassword"
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-xl transition-all duration-200 bg-dark-700/70 border border-dark-600 backdrop-blur hover:border-primary-500"
-            :class="[
-              generatedPassword 
-                ? 'text-primary-500 hover:bg-dark-700 hover:text-primary-400' 
-                : 'text-gray-600 cursor-not-allowed'
-            ]"
-            title="Copy to clipboard"
-          >
-            <svg v-if="!copied" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-            </svg>
-            <svg v-else class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </button>
-        </div>
-        <div v-if="copied" class="text-sm text-green-500 animate-bounce-subtle">
-          Password copied to clipboard!
-        </div>
-      </div>
-
-      <!-- Password Length Slider -->
-      <div class="space-y-4">
-        <div class="flex justify-between items-center">
-          <label class="text-sm font-medium text-gray-300">
-            Password Length
-          </label>
-          <span class="text-primary-500 font-bold text-lg">
-            {{ passwordLength }}
-          </span>
-        </div>
-        <input
-          v-model="passwordLength"
-          type="range"
-          min="8"
-          max="128"
-          class="input-range"
-        />
-        <div class="flex justify-between text-xs text-gray-500">
-          <span>8</span>
-          <span>128</span>
-        </div>
-      </div>
-
-      <!-- Character Options -->
-  <div class="space-y-4">
-        <label class="text-sm font-medium text-gray-300">
-          Character Types
-        </label>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label class="flex items-center space-x-3 cursor-pointer group">
-            <input
-              v-model="includeUppercase"
-              type="checkbox"
-              class="checkbox-custom"
-            />
-            <span class="text-gray-300 group-hover:text-white transition-colors">
-              Uppercase Letters (A-Z)
-            </span>
-          </label>
-          
-          <label class="flex items-center space-x-3 cursor-pointer group">
-            <input
-              v-model="includeLowercase"
-              type="checkbox"
-              class="checkbox-custom"
-            />
-            <span class="text-gray-300 group-hover:text-white transition-colors">
-              Lowercase Letters (a-z)
-            </span>
-          </label>
-          
-          <label class="flex items-center space-x-3 cursor-pointer group">
-            <input
-              v-model="includeNumbers"
-              type="checkbox"
-              class="checkbox-custom"
-            />
-            <span class="text-gray-300 group-hover:text-white transition-colors">
-              Numbers (0-9)
-            </span>
-          </label>
-          
-          <label class="flex items-center space-x-3 cursor-pointer group">
-            <input
-              v-model="includeSymbols"
-              type="checkbox"
-              class="checkbox-custom"
-            />
-            <span class="text-gray-300 group-hover:text-white transition-colors">
-              Symbols (!@#$%^&*)
-            </span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Generate Button -->
-      <div class="pt-2">
-        <button
-          @click="generatePassword"
-          :disabled="!hasValidOptions"
-          class="w-full btn-primary text-lg"
-          :class="{ 'opacity-50 cursor-not-allowed': !hasValidOptions }"
-        >
-          <span class="flex items-center justify-center space-x-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-            </svg>
-            <span>Generate Secure Password</span>
-          </span>
+  <!-- Command Palette -->
+    <div class="cmd overflow-hidden">
+      <!-- Header / Input like palette search -->
+      <div class="cmd-header flex items-center gap-3">
+        <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z"/></svg>
+        <input class="cmd-input font-mono" :value="generatedPassword" readonly :placeholder="generatedPassword || 'Generate a secure password'" />
+        <button @click="copyToClipboard" :disabled="!generatedPassword" class="ml-auto pill flex items-center gap-1" :class="!generatedPassword && 'opacity-50 cursor-not-allowed'">
+          <svg v-if="!copied" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <svg v-else class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <span class="hidden sm:inline">Copy</span>
         </button>
-        <div class="flex flex-wrap gap-2 mt-4 text-xs text-gray-500">
-          <span>Shortcuts:</span>
-          <kbd class="px-2 py-1 rounded bg-dark-800 border border-dark-600">R</kbd> regenerate
-          <kbd class="px-2 py-1 rounded bg-dark-800 border border-dark-600">C</kbd> copy
-          <kbd class="px-2 py-1 rounded bg-dark-800 border border-dark-600">H</kbd> history
-        </div>
       </div>
 
-      <!-- Password Strength Indicator -->
-  <div v-if="generatedPassword" class="space-y-8">
-        <div class="flex justify-between items-center">
-          <span class="text-sm text-gray-400">Password Strength</span>
-          <span :class="strengthColor" class="text-sm font-medium">
-            {{ passwordStrength }}
-          </span>
-        </div>
-        <div class="flex gap-2">
-          <div v-for="n in 4" :key="n" class="flex-1 h-3 rounded-full overflow-hidden bg-dark-700 relative">
-            <div class="absolute inset-0 transition-all duration-500" :class="segmentFillClass(n)"></div>
+      <!-- Options (compact & collapsible) -->
+      <button class="cmd-item w-full" @click="optionsOpen = !optionsOpen" :aria-expanded="optionsOpen">
+        <div class="cmd-icon">⚙</div>
+        <div class="flex-1 text-left">
+          <div class="text-sm text-gray-100">Options</div>
+          <div class="text-xs text-gray-400 truncate">
+            <span class="mr-2">A: {{ includeUppercase ? 'on' : 'off' }}</span>
+            <span class="mr-2">a: {{ includeLowercase ? 'on' : 'off' }}</span>
+            <span class="mr-2">123: {{ includeNumbers ? 'on' : 'off' }}</span>
+            <span class="mr-2">#: {{ includeSymbols ? 'on' : 'off' }}</span>
+            <span>Len: {{ passwordLength }}</span>
           </div>
         </div>
-        <!-- Entropy -->
-  <div class="flex flex-wrap items-center gap-4 text-xs text-gray-400">
-          <div><span class="text-gray-500">Entropy:</span> <span class="text-gray-300 font-mono">{{ entropyBits.toFixed(1) }} bits</span></div>
-          <div><span class="text-gray-500">Est. crack time:</span> <span class="text-gray-300">{{ crackTime }}</span></div>
-          <button class="btn-secondary py-1 px-3 text-xs" @click="showInfo=!showInfo">{{ showInfo? 'Hide':'Why?' }}</button>
-        </div>
-        <transition name="fade-slide">
-          <div v-if="showInfo" class="text-xs leading-relaxed bg-dark-800/60 border border-dark-600 rounded-lg p-4">
-            Entropy estimates randomness. Higher bits exponentially increase resistance to brute force. Formula: log2(characterSetSize^length).
+        <span class="text-gray-400">{{ optionsOpen ? '▾' : '▸' }}</span>
+      </button>
+      <transition name="fade-slide">
+        <div v-if="optionsOpen">
+          <div class="px-4 pb-2 flex flex-wrap gap-2">
+            <button class="chip" :data-active="includeUppercase" aria-pressed="includeUppercase" @click.stop="includeUppercase = !includeUppercase">A</button>
+            <button class="chip" :data-active="includeLowercase" aria-pressed="includeLowercase" @click.stop="includeLowercase = !includeLowercase">a</button>
+            <button class="chip" :data-active="includeNumbers" aria-pressed="includeNumbers" @click.stop="includeNumbers = !includeNumbers">123</button>
+            <button class="chip" :data-active="includeSymbols" aria-pressed="includeSymbols" @click.stop="includeSymbols = !includeSymbols">#</button>
           </div>
-        </transition>
-        <!-- Policy Checklist -->
-        <ul class="grid grid-cols-2 gap-2 text-xs text-gray-400">
-          <li v-for="c in checklist" :key="c.label" class="flex items-center gap-1" :class="c.ok ? 'text-green-400':'text-gray-500'">
-            <span>{{ c.ok ? '✓':'•' }}</span> {{ c.label }}
-          </li>
-        </ul>
-        <!-- Compact History (collapsible) -->
-        <div v-if="history.length" class="pt-2">
-          <button @click="historyOpen = !historyOpen" class="text-xs text-primary-500 hover:text-primary-400 font-medium flex items-center gap-1">
-            <span>{{ historyOpen ? 'Hide' : 'Show' }} History ({{ history.length }})</span>
-            <span>{{ historyOpen ? '▾' : '▸' }}</span>
-          </button>
+          <div class="px-4 pb-3">
+            <div class="flex items-center justify-between text-xs text-gray-400">
+              <span>Length</span>
+              <span class="pill">{{ passwordLength }}</span>
+            </div>
+            <input v-model="passwordLength" type="range" min="8" max="128" class="input-range mt-2" />
+          </div>
+        </div>
+      </transition>
+
+      <div class="cmd-divider"></div>
+
+      <!-- Actions -->
+      <div class="cmd-section-title">Actions</div>
+      <div class="cmd-item" :aria-selected="true">
+        <div class="cmd-icon text-primary-400">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <button class="text-sm text-gray-100" @click="generatePassword" :disabled="!hasValidOptions">Generate secure password</button>
+        <div class="ml-auto flex items-center gap-1 text-gray-400">
+          <span class="pill hidden sm:inline">R</span>
+        </div>
+      </div>
+      <div class="px-4 pb-3 text-[11px] text-gray-500">
+        Shortcuts: R regenerate • C copy • H history
+      </div>
+
+      <!-- Strength -->
+      <div v-if="generatedPassword" class="cmd-section-title">Strength</div>
+      <div v-if="generatedPassword" class="cmd-item">
+        <div class="cmd-icon">🔒</div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between text-xs text-gray-400">
+            <span>Password Strength</span>
+            <span :class="strengthColor" class="font-medium">{{ passwordStrength }}</span>
+          </div>
+          <div class="mt-2 flex gap-2">
+            <div v-for="n in 4" :key="n" class="flex-1 h-2 rounded-full overflow-hidden bg-dark-700 relative">
+              <div class="absolute inset-0 transition-all duration-500" :class="segmentFillClass(n)"></div>
+            </div>
+          </div>
+          <div class="mt-2 text-[11px] text-gray-400 flex flex-wrap gap-3">
+            <span><span class="text-gray-500">Entropy:</span> <span class="text-gray-300 font-mono">{{ entropyBits.toFixed(1) }} bits</span></span>
+            <span><span class="text-gray-500">Est. crack:</span> <span class="text-gray-300">{{ crackTime }}</span></span>
+            <button class="pill" @click="showInfo=!showInfo">{{ showInfo? 'Hide':'Why?' }}</button>
+          </div>
           <transition name="fade-slide">
-            <div v-if="historyOpen" class="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
-              <div v-for="item in history" :key="item.id" class="flex items-center gap-1 px-3 py-2 rounded-full bg-dark-800/70 border border-dark-700 hover:border-primary-500/60 text-[11px] whitespace-nowrap group relative">
-                <code class="font-mono tracking-tight" :title="item.value">{{ item.revealed ? item.value : mask(item.value) }}</code>
-                <button class="text-primary-500 hover:text-primary-400" @click="reUse(item.value)" title="Reuse">↺</button>
-                <button class="text-gray-400 hover:text-green-400" @click="reveal(item)" title="Toggle mask">👁</button>
-              </div>
+            <div v-if="showInfo" class="mt-2 text-[11px] leading-relaxed text-gray-300">
+              Entropy estimates randomness. Higher bits exponentially increase resistance to brute force.
             </div>
           </transition>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div v-if="history.length" class="cmd-section-title">History</div>
+      <div v-if="history.length" class="px-4 pb-4">
+        <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          <div v-for="item in history" :key="item.id" class="pill whitespace-nowrap flex items-center gap-2">
+            <code class="font-mono" :title="item.value">{{ item.revealed ? item.value : mask(item.value) }}</code>
+            <button class="text-primary-500 hover:text-primary-400" @click="reUse(item.value)" title="Reuse">↺</button>
+            <button class="text-gray-400 hover:text-green-400" @click="reveal(item)" title="Toggle mask">👁</button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="text-center mt-8 text-gray-500 text-sm space-y-2">
-      <p>🔒 All passwords are generated locally in your browser for maximum security</p>
+    <div class="text-center mt-6 text-gray-500 text-xs space-y-1">
+      <p>All passwords are generated locally in your browser.</p>
       <p>
-        Made with ❤️ by 
-        <a 
-          href="https://0xpacman.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="text-primary-500 hover:text-primary-400 transition-colors duration-200 font-medium"
-        >
-          0xPacman
-        </a>
+        Made by
+        <a href="https://0xpacman.com" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:text-primary-400">0xPacman</a>
       </p>
     </div>
   </div>
@@ -251,14 +156,8 @@ const crackTime = computed(() => {
   return (years/1000).toFixed(2)+'k years'
 })
 const showInfo = ref(false)
-const checklist = computed(() => [
-  { label: '≥ 12 chars', ok: generatedPassword.value.length >= 12 },
-  { label: 'Uppercase', ok: /[A-Z]/.test(generatedPassword.value) },
-  { label: 'Lowercase', ok: /[a-z]/.test(generatedPassword.value) },
-  { label: 'Number', ok: /[0-9]/.test(generatedPassword.value) },
-  { label: 'Symbol', ok: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(generatedPassword.value) },
-  { label: 'Unique mix', ok: new Set(generatedPassword.value).size > generatedPassword.value.length * 0.6 }
-])
+const optionsOpen = ref(false)
+// checklist removed in palette UI
 
 // History helpers
 const pushHistory = (pwd:string) => {
