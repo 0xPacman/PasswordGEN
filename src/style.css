@@ -1,3 +1,9 @@
+  .chip {
+    @apply px-3 py-1 rounded-full text-xs font-semibold border border-gray-700 bg-dark-800 text-gray-300 cursor-pointer transition-colors;
+  }
+  .chip-active {
+    @apply border-primary-500 bg-primary-500/10 text-primary-500;
+  }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

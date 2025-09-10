@@ -156,7 +156,7 @@ const crackTime = computed(() => {
   return (years/1000).toFixed(2)+'k years'
 })
 const showInfo = ref(false)
-const optionsOpen = ref(false)
+const optionsOpen = ref(true)
 // checklist removed in palette UI
 
 // History helpers
