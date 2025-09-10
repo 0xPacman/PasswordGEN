@@ -36,10 +36,10 @@
       <transition name="fade-slide">
         <div v-if="optionsOpen">
           <div class="px-4 pb-2 flex flex-wrap gap-2">
-            <button class="chip" :data-active="includeUppercase" aria-pressed="includeUppercase" @click.stop="includeUppercase = !includeUppercase">A</button>
-            <button class="chip" :data-active="includeLowercase" aria-pressed="includeLowercase" @click.stop="includeLowercase = !includeLowercase">a</button>
-            <button class="chip" :data-active="includeNumbers" aria-pressed="includeNumbers" @click.stop="includeNumbers = !includeNumbers">123</button>
-            <button class="chip" :data-active="includeSymbols" aria-pressed="includeSymbols" @click.stop="includeSymbols = !includeSymbols">#</button>
+            <button class="chip" :data-active="includeUppercase" :aria-pressed="includeUppercase" @click.stop="includeUppercase = !includeUppercase">A</button>
+            <button class="chip" :data-active="includeLowercase" :aria-pressed="includeLowercase" @click.stop="includeLowercase = !includeLowercase">a</button>
+            <button class="chip" :data-active="includeNumbers" :aria-pressed="includeNumbers" @click.stop="includeNumbers = !includeNumbers">123</button>
+            <button class="chip" :data-active="includeSymbols" :aria-pressed="includeSymbols" @click.stop="includeSymbols = !includeSymbols">#</button>
           </div>
           <div class="px-4 pb-3">
             <div class="flex items-center justify-between text-xs text-gray-400">
