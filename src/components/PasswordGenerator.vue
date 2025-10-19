@@ -58,12 +58,10 @@
             @click="copyToClipboard()"
             :disabled="!generatedPassword"
             class="cmd-tool cmd-copy flex items-center"
-            :data-success="copied"
-            :aria-label="copied ? 'Password copied to clipboard' : 'Copy password to clipboard'"
+            aria-label="Copy password to clipboard"
           >
-            <svg v-if="!copied" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-            <svg v-else class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <span class="sr-only" aria-live="polite">{{ copied ? 'Copied' : 'Copy' }}</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span class="sr-only">Copy</span>
           </button>
         </div>
       </div>
@@ -90,6 +88,10 @@
             <button class="chip" type="button" :data-active="includeLowercase" :aria-pressed="includeLowercase" @click.stop="includeLowercase = !includeLowercase">a</button>
             <button class="chip" type="button" :data-active="includeNumbers" :aria-pressed="includeNumbers" @click.stop="includeNumbers = !includeNumbers">123</button>
             <button class="chip" type="button" :data-active="includeSymbols" :aria-pressed="includeSymbols" @click.stop="includeSymbols = !includeSymbols">#</button>
+          </div>
+          <div v-if="includeSymbols" class="px-4 pb-3">
+            <label class="block text-xs text-gray-400 mb-2">Custom Symbols</label>
+            <input type="text" v-model="customSymbols" class="cmd-input font-mono w-full text-xs" />
           </div>
           <div class="px-4 pb-3">
             <div class="flex items-center justify-between text-xs text-gray-400">
@@ -171,6 +173,14 @@
         <a href="https://0xpacman.com" target="_blank" rel="noopener noreferrer" class="text-primary-500 hover:text-primary-400">0xPacman</a>
       </p>
     </div>
+
+    <!-- Toast Notification -->
+    <div
+      v-if="toast.visible"
+      class="fixed bottom-5 right-5 bg-dark-800 text-white py-2 px-4 rounded-lg shadow-lg"
+    >
+      {{ toast.message }}
+    </div>
   </div>
 </template>
 
@@ -186,8 +196,9 @@ const includeUppercase = ref(true)
 const includeLowercase = ref(true)
 const includeNumbers = ref(true)
 const includeSymbols = ref(true)
-const copied = ref(false)
+const customSymbols = ref('!@#$%^&*()_+-=[]{}|;:,.<>?')
 const history = ref<{id:number; value:string; revealed?:boolean}[]>([])
+const toast = ref({ visible: false, message: '' })
 // history displayed in bottom section only
 const historyOpen = ref(false)
 const maxHistory = 5
@@ -265,7 +276,6 @@ const toggleReveal = () => {
 const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz'
 const numberChars = '0123456789'
-const symbolChars = '!@#$%^&*()_+-=[]{}|;:,.<>?'
 
 // Computed properties
 const hasValidOptions = computed(() => {
@@ -277,7 +287,7 @@ const characterSet = computed(() => {
   if (includeUppercase.value) chars += uppercaseChars
   if (includeLowercase.value) chars += lowercaseChars
   if (includeNumbers.value) chars += numberChars
-  if (includeSymbols.value) chars += symbolChars
+  if (includeSymbols.value) chars += customSymbols.value
   return chars
 })
 
@@ -343,33 +353,34 @@ const strengthAdvice = computed(() => {
 // Password validation function (similar to the shell script)
 const isPasswordValid = (password: string): boolean => {
   if (password.length < 8) return false
-  
+
   const hasUpper = includeUppercase.value ? /[A-Z]/.test(password) : true
   const hasLower = includeLowercase.value ? /[a-z]/.test(password) : true
   const hasNumber = includeNumbers.value ? /[0-9]/.test(password) : true
-  const hasSymbol = includeSymbols.value ? /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password) : true
-  
+  const hasSymbol = includeSymbols.value ? new RegExp(`[${customSymbols.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]`).test(password) : true
+
   return hasUpper && hasLower && hasNumber && hasSymbol
 }
 
 // Generate password function
 const generatePassword = () => {
   if (!hasValidOptions.value) return
-  
+
   let password = ''
   let attempts = 0
   const maxAttempts = 100
-  
-  // Keep generating until we get a valid password (like the shell script)
+
+  // Keep generating until we get a valid password
   do {
     password = ''
+    const randomValues = new Uint32Array(passwordLength.value)
+    window.crypto.getRandomValues(randomValues)
     for (let i = 0; i < passwordLength.value; i++) {
-      const randomIndex = Math.floor(Math.random() * characterSet.value.length)
-      password += characterSet.value[randomIndex]
+      password += characterSet.value[randomValues[i] % characterSet.value.length]
     }
     attempts++
   } while (!isPasswordValid(password) && attempts < maxAttempts)
-  
+
   generatedPassword.value = password
   isRevealed.value = true
   copied.value = false
@@ -385,13 +396,14 @@ const copyToClipboard = async (value?: string, showFeedback = value === undefine
   try {
     await navigator.clipboard.writeText(payload)
     if (showFeedback) {
-      copied.value = true
+      toast.value = { visible: true, message: 'Password copied to clipboard!' }
       setTimeout(() => {
-        copied.value = false
+        toast.value.visible = false
       }, 2000)
     }
   } catch (err) {
     console.error('Failed to copy password:', err)
+    // Fallback for older browsers
     const textArea = document.createElement('textarea')
     textArea.value = payload
     document.body.appendChild(textArea)
@@ -399,9 +411,9 @@ const copyToClipboard = async (value?: string, showFeedback = value === undefine
     document.execCommand('copy')
     document.body.removeChild(textArea)
     if (showFeedback) {
-      copied.value = true
+      toast.value = { visible: true, message: 'Password copied to clipboard!' }
       setTimeout(() => {
-        copied.value = false
+        toast.value.visible = false
       }, 2000)
     }
   }
